@@ -1,0 +1,1945 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>OPEN CITY PLANS</title>
+    <style type="text/css">
+        html
+        {
+            width: 100%;
+            height: 100%;
+            padding: 0px 0px 0px 0px;
+            margin: 0px 0px 0px 0px;
+        }
+
+        div.signal_status_no
+        {
+            background-color: red;
+        }
+
+        div.signal_status_ok
+        {
+            background-color: green;
+        }
+
+        div.info_window
+        {
+            color: black;
+        }
+
+        #direction_serv
+        {
+            position: fixed;
+            z-index: 2;
+            background-color: purple;
+            visibility: hidden;
+            top: 60px;
+            left: 10px;
+        }
+
+        body
+        {
+            width: 100%;
+            height: 100%;
+            color: White;
+            background-color: Gray;
+            padding: 0px 0px 0px 0px;
+            margin: 0px 0px 0px 0px;
+            min-height: 700px;
+            min-width: 900px;
+        }
+
+        #map_canvas
+        {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        #menu
+        {
+            position: fixed;
+            z-index: 2;
+            color: black;
+            right: 10px;
+            background-color:white;
+        }
+
+            #menu ul
+            {
+                list-style-type: none;
+                padding: 0px 0px 0px 0px;
+                margin: 0px 0px 0px 0px;
+            }
+
+                #menu ul li
+                {
+                    display: inline;
+                    min-width: 50px;
+                    height: 20px;
+                    margin: 10px 5px 0px 5px;
+                    font-family: Times New Roman;
+                    font-size: 25px;
+                    cursor: default;
+                }
+
+        #projects_option
+        {
+            position: fixed;
+            z-index: 2;
+            color: Black;
+            left: 0px;
+            top: 30px;
+        }
+
+            #projects_option label
+            {
+                max-width: 10px;
+                color: Blue;
+            }
+
+        div.move_container
+        {
+            color: Black;
+            background-color: white;
+        }
+
+        div.content_container
+        {
+            background-color: Gray;
+            padding: 5px 5px 5px 5px;
+        }
+
+        div.header_container
+        {
+            background-color: Silver;
+            height: 20px;
+            float: left;
+        }
+
+        div.menu_strip
+        {
+            height: 20px;
+            background-color: Silver;
+        }
+
+        div.menu_strip_zip
+        {
+            float: right;
+        }
+
+        #minimized_windows
+        {
+            position: fixed;
+            max-height: 25px;
+            max-width: 55px;
+            color: Black;
+            background-color: Green;
+            z-index: 2;
+            overflow: hidden;
+            top: 40%;
+        }
+
+        #minimized_windows2
+        {
+            position: fixed;
+            max-height: 25px;
+            max-width: 55px;
+            color: Black;
+            background-color: Green;
+            z-index: 2;
+            overflow: hidden;
+            top: 43%;
+        }
+
+        label.red
+        {
+            color: Red;
+        }
+
+        div.auto_comp_div
+        {
+            max-height: 25px;
+            overflow: visible;
+            position: relative;
+        }
+
+        #progress_bar_over_all
+        {
+            width: 100%;
+            height: 100%;
+            margin: 0px 0px 0px 0px;
+            padding: 0px 0px 0px 0px;
+            visibility: hidden;
+            background-color: Black;
+            opacity: 0.8;
+            position: fixed;
+            z-index: 3;
+        }
+
+        #progress_bar_over
+        {
+            margin: 0px 0px 0px 0px;
+            padding: 0px 0px 0px 0px;
+            width: 500px;
+            height: 200px;
+            background-color: Green;
+            margin-top: -100px;
+            margin-left: -250px;
+            left: 50%;
+            top: 50%;
+            position: relative;
+        }
+
+        #progress_bar_top
+        {
+            height: 50px;
+            width: 100%;
+            background-color: Maroon;
+        }
+
+        #progress_bar_main
+        {
+            width: 100%;
+            height: 125px;
+        }
+
+        #progress_bar_prompt
+        {
+            height: 25px;
+            background-color: Blue;
+        }
+        #prompt_div button
+        {
+            height:35px;
+            font-family:'Times New Roman';
+            font-size:20px;
+        }
+    </style>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=drawing">  </script>
+    <script type="text/javascript">
+        function load_styles()
+        {
+            var ele = document.getElementById("map_cover");
+            ele.style.position = "absolute";
+            ele.style.width = "100%";
+            ele.style.height = "100%";
+
+            ele = document.getElementById("prompt_div");
+            ele.style.position = "fixed";
+            ele.style.zIndex = "2";
+            ele.style.right = "40px";
+            ele.style.top = "23px";
+            ele.style.visibility = "hidden";
+
+            ele = document.getElementById("add_information_div");
+            ele.style.position = "absolute";
+            ele.style.left = "80px";
+            ele.style.top = "40px";
+            ele.style.zIndex = "2";
+            ele.style.visibility = "hidden";
+            ele = document.getElementById("header_information1");
+            ele.style.cursor = "move";
+
+            ele = document.getElementById("direction_serv");
+            ele.style.position = "fixed";
+            ele.style.left = "80px";
+            ele.style.top = "42px";
+            ele.style.zIndex = "2";
+            ele.style.visibility = "hidden";
+            ele = document.getElementById("header_information2");
+            ele.style.cursor = "move";
+            ele = document.getElementById("minimized_windows2");
+            ele.style.position = "fixed";
+            ele.style.zIndex = "2";
+            ele.style.top = "42%";
+            ele.style.overflow = "hidden";
+            ele.style.color = "black";
+            ele.style.backgroundColor = "green";
+
+            ele = document.getElementById("map_controls");
+            ele.style.position = "fixed";
+            ele.style.zIndex = "2";
+            ele.style.color = "blue";
+            ele.style.right = "10px";
+            ele.style.bottom = "10px";
+
+
+        }
+    </script>
+    <script type="text/javascript">
+        //global data here ,map to store map,
+        var map;
+        var my_window = function ()
+        {
+            this.movable = true;
+            this.event_listeners_created =
+            {
+                for_movement: false, for_zip: false
+            };
+            this.event_listeners =
+            {
+                onup: 00, ondown: 00, onmove: 00
+            };
+            this.x_axis = 0;
+            this.y_axis = 0;
+            this.mouse_down_on_element = false;
+            this.mini_window_listeners =
+            {
+                first_listener: 00, second_listener: 00
+            };
+            this.event_listener_divs_id =
+            {
+                main_container: "", sensitive_div: "", minimizable_div: "", mini_place_div: ""
+            };
+        };
+        var my_lat_lng = function ()
+        {
+            this.lat = 0;
+            this.lng = 0;
+            if (arguments.length == 2)
+            {
+                this.lat = arguments[0];
+                this.lng = arguments[1];
+            }
+        };
+        var my_circle = function ()
+        {
+            this.center = new my_lat_lng();
+            this.radius = 0;
+        };
+        var my_rectangle = function ()
+        {
+            this.north_east_point = new my_lat_lng();
+            this.south_west_point = new my_lat_lng();
+        };
+        var my_poly = function ()
+        {
+            this.lat_lng_array = new Array();
+        };
+        var my_bound = function ()
+        {
+            this.sw = new my_lat_lng();
+            this.ne = new my_lat_lng();
+            this.equals = function ()
+            {
+
+                var temp = new my_bound();
+                temp = arguments[0];
+                if ((this.ne.lat == temp.ne.lat) && (this.ne.lng == temp.ne.lng))
+                {
+                    if ((this.sw.lat == temp.sw.lat) && (this.sw.lng == temp.sw.lng))
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            };
+        };
+
+        var any_map_data = function ()
+        {
+            this.shape = "none";
+            this.shape_reference = null;
+            this.actual_map_object = null;
+        };
+        function createrequestobject()
+        {
+            var joa;
+            if (window.XMLHttpRequest) {
+                joa = new XMLHttpRequest();
+            }
+            else if (window.ActiveXObject) {
+
+                var xmlhttpversions = new Array("MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP");
+                for (var i = 0; i < xmlhttpversions.length && !joa; i++) {
+                    try {
+                        joa = new ActiveXObject(xmlhttpversions[i]);
+                    }
+                    catch (eee) { }
+                }
+            }
+            return joa;
+        }
+    </script>
+    <script type="text/javascript">
+        /*DM to store DrawingManager,DM_data to store data of shapes created*/
+        var DM = null, DM_data = [];
+        //change mode add,view
+        var my_global_array = {
+            marker_images: {
+                hospital: new google.maps.MarkerImage({ url: "AppImage/medicine.png" }),
+                bridge: new google.maps.MarkerImage({ url: "AppImage/bridge_modern.png" }),
+                road: new google.maps.MarkerImage({ url: "AppImage/road.png" }),
+                school: new google.maps.MarkerImage({ url: "AppImage/library.png" }),
+                construction: new google.maps.MarkerImage({ url: "AppImage/construction.png" }),
+                park: new google.maps.MarkerImage({ url: "AppImage/citysquare.png" })
+            },
+            mode: "view",
+            view_data: {
+                event_created_for_drag_end: false,
+                event_map_drag_end_id: 0,
+                current_map_bound: new my_bound(),
+                projects: []
+            },
+            add_data: {
+                direction_service: {
+                    temp_poly: null,
+                    reset: function ()
+                    {
+                        my_global_array.add_data.direction_service.activated_on_map = false;
+                        my_global_array.add_data.direction_service.destination = new my_lat_lng();
+                        if (my_global_array.add_data.direction_service.destination_marker != null)
+                            my_global_array.add_data.direction_service.destination_marker.setMap(null);
+                        if (my_global_array.add_data.direction_service.source_marker != null)
+                            my_global_array.add_data.direction_service.source_marker.setMap(null);
+                        my_global_array.add_data.direction_service.source_marker = null;
+                        my_global_array.add_data.direction_service.destination_marker = null;
+                        if (my_global_array.add_data.direction_service.event_attached.for_destination) {
+                            my_global_array.add_data.direction_service.event_attached.for_destination = false;
+                            google.maps.event.removeListener(my_global_array.add_data.direction_service.event_code.for_set_destination);
+
+                        }
+                        if (my_global_array.add_data.direction_service.event_attached.for_source) {
+                            my_global_array.add_data.direction_service.event_attached.for_source = false;
+                            google.maps.event.removeListener(my_global_array.add_data.direction_service.event_attached.for_source);
+                        }
+                        if (my_global_array.add_data.direction_service.direction_renderer != null)
+                            my_global_array.add_data.direction_service.direction_renderer.setMap(null);
+                        my_global_array.add_data.direction_service.direction_renderer = null;
+                        document.getElementById("f_sig").innerHTML = "<label>Not set</label";
+                        document.getElementById("s_sig").innerHTML = "<label>Not set</label";
+                        document.getElementById("f_sig").className = "signal_status_no";
+                        document.getElementById("s_sig").className = "signal_status_no";
+
+                    },
+                    direction_renderer: null,
+                    destination_marker: null,
+                    source_marker: null,
+                    activated_on_map: false,
+                    destination: new my_lat_lng(),
+                    source: new my_lat_lng(),
+                    event_attached: {
+                        for_source: false, for_destination: false
+                    },
+                    event_code: { for_source: 0, for_destination: 0, for_set_destination: 0 }
+                }
+            }
+        };
+        //VM_data to store all viewing data
+        var VM_data = null;
+        //fdb_project to hold a project's data fetched from server
+        var fdb_project = function ()
+        {
+            this.meta_information = { map_shapes_count: 0, data_available: false, project_id: 0, onmap: false, content: "" };
+            this.project_data = { name: "", authority: "", contractor: "", description: "", category: "", cost_estimated: 0, cost_incurred: 0, start_date: "", end_date: "", date_of_contract: "" };
+            this.map_data = [];
+            this.request_data_from_database = function ()
+            {
+                if (this.meta_information.project_id != 0) {
+                    if (!this.meta_information.data_available) {
+                        var project_request = createrequestobject();
+                        var request_url = "get_project_data.php?project_id=" + this.meta_information.project_id;
+                        project_request.open("GET", request_url, true);
+                        var y = this.meta_information.project_id;
+                        (
+
+                        //y is the project id of the calling function
+                        function (y)
+                        {
+                            project_request.onreadystatechange = function ()
+                            {
+                                if (project_request.readyState == 4) {
+                                    if (project_request.status == 200) {
+                                        var response_xml = project_request.responseXML;
+                                        var return_id = response_xml.getElementsByTagName("project_id")[0].text;
+                                        var project_element = response_xml.getElementsByTagName("project_information")[0];
+                                        //first set project information
+                                        var temp_ary = project_element.getElementsByTagName("column");
+                                        var content = "<div class='info_window'>";
+                                        content += "<table>";
+                                        var temp_content = "<h4 style='color:black;'>";
+                                        for (var jk = 0; jk < temp_ary.length; jk++) {
+                                            switch (temp_ary[jk].getElementsByTagName("name")[0].text) {
+                                                case "name":
+                                                    //content += "<tr><td><label>Project Name</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.name = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    //content += my_global_array.view_data.projects[y].project_data.name;
+                                                    //content += "</label></td></tr>";
+                                                    temp_content += my_global_array.view_data.projects[y].project_data.name;
+                                                    temp_content += "</h4>";
+                                                    break;
+                                                case "authority":
+                                                    content += "<tr><td><label>Authority</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.authority = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.authority;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                case "description":
+                                                    content += "<tr><td><label>Description</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.description = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.description;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                case "category":
+                                                    content += "<tr><td><label>Category</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.category = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.category;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                case "incurred cost":
+                                                    content += "<tr><td><label>Cost Incurred</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.cost_incurred = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.cost_incurred;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                case "estimated cost":
+                                                    content += "<tr><td><label>Cost Estimated</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.cost_estimated = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.cost_estimated;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                case "start date":
+                                                    content += "<tr><td><label>Project Start Date</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.start_date = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.start_date;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                case "end date":
+                                                    content += "<tr><td><label>Project End Date</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.end_date = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.end_date;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                case "contract date":
+                                                    content += "<tr><td><label>Contract Date</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.date_of_contract = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.date_of_contract;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                case "contractor":
+                                                    content += "<tr><td><label>Contractor</label></td><td><label>";
+                                                    my_global_array.view_data.projects[y].project_data.contractor = temp_ary[jk].getElementsByTagName("value")[0].text;
+                                                    content += my_global_array.view_data.projects[y].project_data.contractor;
+                                                    content += "</label></td></tr>";
+                                                    break;
+                                                default: alert("no match found for" + temp_ary[jk].getElementsByTagName("name")[0].text);
+                                            }
+                                        }
+                                        content += "</div>";
+                                        //then set project data
+                                        temp_ary = response_xml.getElementsByTagName("shape");
+                                        for (var jk = 0; jk < temp_ary.length; jk++) {
+                                            //del line below for intellinsense only
+                                            //my_global_array.view_data.projects[y] = new fdb_project();
+                                            var shape_type = temp_ary[jk].getElementsByTagName("type")[0].text;
+                                            switch (shape_type) {
+                                                case "circle":
+                                                    var crc = new my_circle();
+                                                    crc.center.lat = temp_ary[jk].getElementsByTagName("lat")[0].text;
+                                                    crc.center.lng = temp_ary[jk].getElementsByTagName("lng")[0].text;
+                                                    crc.radius = temp_ary[jk].getElementsByTagName("radius")[0].text;
+                                                    var tko = new any_map_data();
+                                                    tko.shape = "circle";
+                                                    tko.shape_reference = crc;
+                                                    //var g_crc=new google.maps.Circle();
+                                                    var g_crc = new google.maps.Circle({ center: new google.maps.LatLng(crc.center.lat, crc.center.lng), radius: parseFloat(crc.radius) });
+                                                    tko.actual_map_object = g_crc;
+                                                    my_global_array.view_data.projects[y].map_data.push(tko);
+                                                    break;
+                                                case "rectangle":
+                                                    var rec = new my_rectangle();
+                                                    rec.north_east_point.lat = temp_ary[jk].getElementsByTagName("north_east")[0].getElementsByTagName("lat")[0].text;
+                                                    rec.north_east_point.lng = temp_ary[jk].getElementsByTagName("north_east")[0].getElementsByTagName("lng")[0].text;
+                                                    rec.south_west_point.lat = temp_ary[jk].getElementsByTagName("south_west")[0].getElementsByTagName("lat")[0].text;
+                                                    rec.south_west_point.lng = temp_ary[jk].getElementsByTagName("south_west")[0].getElementsByTagName("lng")[0].text;
+                                                    var tko = new any_map_data();
+                                                    tko.shape = "rectangle";
+                                                    tko.shape_reference = rec;
+                                                    var sw = new google.maps.LatLng(rec.south_west_point.lat, rec.south_west_point.lng);
+                                                    var ne = new google.maps.LatLng(rec.north_east_point.lat, rec.north_east_point.lng);
+                                                    var rect = new google.maps.Rectangle({ bounds: new google.maps.LatLngBounds(sw, ne) });
+                                                    tko.actual_map_object = rect;
+                                                    my_global_array.view_data.projects[y].map_data.push(tko);
+                                                    break;
+                                                case "polyline":
+                                                    var pol = new my_poly();
+                                                    var temp_lat_lng_array = [];
+                                                    for (var ik = 0; ik < temp_ary[jk].getElementsByTagName("poly").length; ik++) {
+                                                        var llat = temp_ary[jk].getElementsByTagName("poly")[ik].getElementsByTagName("lat")[0].text;
+                                                        var llng = temp_ary[jk].getElementsByTagName("poly")[ik].getElementsByTagName("lng")[0].text;
+                                                        pol.lat_lng_array.push(new my_lat_lng(parseFloat(llat), parseFloat(llng)));
+                                                        temp_lat_lng_array.push(new google.maps.LatLng(parseFloat(llat), parseFloat(llng)));
+                                                    }
+                                                    var tko = new any_map_data();
+                                                    tko.shape = "polyline";
+                                                    tko.shape_reference = pol;
+                                                    var pols1 = new google.maps.Polyline({ path: temp_lat_lng_array });
+                                                    tko.actual_map_object = pols1;
+                                                    my_global_array.view_data.projects[y].map_data.push(tko);
+                                                    break;
+                                                default: alert("shape not handled" + shape_type);
+                                            }
+                                        }
+                                        //my_global_array.view_data.projects[y] = new fdb_project();
+                                        my_global_array.view_data.projects[y].info_window_reference = new google.maps.InfoWindow();
+                                        var whole_content = temp_content + content;
+                                        my_global_array.view_data.projects[y].info_window_reference.setContent(whole_content);
+                                        my_global_array.view_data.projects[y].marker_reference = new google.maps.Marker();
+                                        my_global_array.view_data.projects[y].meta_information.data_available = true;
+                                        my_global_array.view_data.projects[y].meta_information.map_shapes_count = temp_ary.length;
+                                        my_global_array.view_data.projects[y].print();
+                                        //my_global_array.view_data.projects[y].meta_information.content=content;
+                                        var cate = my_global_array.view_data.projects[y].project_data.category;
+                                        switch (cate) {
+                                            case "road": my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/road.png" });
+                                                break;
+                                            case "construction": my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/construction.png" });
+                                                break;
+                                            case "study": my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/communitycenter.png" });
+                                                break;
+                                            case "bridge":
+                                                my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/bridge_modern.png" });
+                                                break;
+                                            case "hospital":
+                                                my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/hospital-building.png" });
+                                                break;
+                                            case "army":
+                                                my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/army.png" });
+                                                break;
+                                            case "traffic":
+                                                my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/trafficlight.png" });
+                                                break;
+                                            case "airport":
+                                                my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/air_fixwing.png" });
+                                                break;
+                                            default: my_global_array.view_data.projects[y].marker_reference.setIcon({ url: "AppImage/information.png" });
+                                        }
+                                    }
+                                }
+                            };
+                        }
+                        )(y);
+
+                        project_request.send();
+
+                    }
+                }
+                else {
+                    alert("first set id for the project before requesting for data");
+                }
+            };
+            //-1 for none and other for index no
+            this.info_window_opened_by_map_data_index = -1;
+            this.info_window_reference = null;
+            this.marker_reference = null;
+            this.marker_opened = false;
+            this.print = function ()
+            {
+
+
+                if (this.meta_information.data_available) {
+                    if (!this.meta_information.onmap) {
+                        for (var ks = 0; ks < this.map_data.length; ks++) {
+                            this.map_data[ks].actual_map_object.setMap(map);
+                            this.meta_information.onmap = true;
+                            var ids = parseInt(this.meta_information.project_id);
+                            var laln = new google.maps.LatLng();
+                            switch (this.map_data[0].shape) {
+                                case "circle": laln = new google.maps.LatLng(this.map_data[0].actual_map_object.getCenter().lat(), this.map_data[0].actual_map_object.getCenter().lng());
+                                    break;
+                                case "rectangle": laln = new google.maps.LatLng(this.map_data[0].actual_map_object.getBounds().getCenter().lat(), this.map_data[0].actual_map_object.getBounds().getCenter().lng());
+                                    break;
+                                case "polyline": laln = new google.maps.LatLng(this.map_data[0].actual_map_object.getPath().getArray()[0].lat(), this.map_data[0].actual_map_object.getPath().getArray()[0].lng());
+                                    break;
+                            }
+                            var dc = this.map_data.length;
+                            (
+                            function (ids, dc)
+                            {
+                                for (var ks = 0; ks < dc; ks++) {
+                                    (
+                                    function (ks, ids, dc)
+                                    {
+                                        google.maps.event.addListener(my_global_array.view_data.projects[ids].map_data[ks].actual_map_object, "click", function ()
+                                        {
+                                            var shape = my_global_array.view_data.projects[ids].map_data[ks].shape;
+                                            var kso = new google.maps.LatLng();
+                                            switch (shape) {
+                                                case "circle": kso = new google.maps.LatLng(my_global_array.view_data.projects[ids].map_data[ks].actual_map_object.getCenter().lat(), my_global_array.view_data.projects[ids].map_data[ks].actual_map_object.getCenter().lng());
+                                                    break;
+                                                case "rectangle":
+                                                    kso = new google.maps.LatLng(my_global_array.view_data.projects[ids].map_data[ks].actual_map_object.getBounds().getCenter().lat(), my_global_array.view_data.projects[ids].map_data[ks].actual_map_object.getBounds().getCenter().lng());
+                                                    break;
+                                                case "polyline":
+                                                    kao = new google.maps.LatLng(my_global_array.view_data.projects[ids].map_data[ks].actual_map_object.getPath()[0].lat(), my_global_array.view_data.projects[ids].map_data[ks].actual_map_object.getPath()[0].lng());
+                                                    break;
+                                            }
+                                            my_global_array.view_data.projects[ids].marker_reference.setPosition(kso);
+                                            my_global_array.view_data.projects[ids].marker_reference.setVisible(true);
+                                            my_global_array.view_data.projects[ids].marker_reference.marker_opened = true;
+
+                                        });
+                                    }
+                                    )(ks, ids, dc);
+
+                                }
+
+                            }
+                            )(ids, dc);
+
+                            this.info_window_opened_by_map_data_index = 0;
+                            this.marker_reference.setPosition(laln);
+                            this.marker_reference.setMap(map);
+
+                            (
+                            function (ids)
+                            {
+                                //comment it 
+                                // my_global_array.view_data.projects[ids] = new fdb_project();
+                                google.maps.event.addListener(my_global_array.view_data.projects[ids].marker_reference, "click", function (e)
+                                {
+                                    my_global_array.view_data.projects[ids].info_window_reference.open(map, my_global_array.view_data.projects[ids].marker_reference);
+                                });
+                                google.maps.event.addListener(my_global_array.view_data.projects[ids].marker_reference, "dblclick", function (e)
+                                {
+                                    my_global_array.view_data.projects[ids].info_window_reference.close();
+                                    //my_global_array.view_data.projects[ids].marker_reference.setVisible(false);
+                                    my_global_array.view_data.projects[ids].info_window_opened_by_map_data_index = -1;
+
+
+                                });
+
+                            }
+                            )(ids);
+                        }
+                    }
+                }
+            };
+            this.unprint = function ()
+            {
+                if (this.meta_information.data_available) {
+                    if (this.meta_information.onmap) {
+                        for (var ks = 0; ks < this.map_data.length; ks++) {
+                            this.map_data[ks].actual_map_object.setMap(null);
+                            this.meta_information.onmap = false;
+                            this.marker_reference.setMap(null);
+                            this.info_window_opened_by_map_data_index = -1;
+                            this.info_window_reference.setMap(null);
+                        }
+                    }
+                }
+            };
+            this.set_marker_icon = function ()
+            {
+
+            }
+        };
+
+        var my_windows = [];
+        my_windows = { "add_information_div": new my_window() };
+        my_windows["add_information_div"].event_listener_divs_id.main_container = "add_information_div";
+        my_windows["add_information_div"].event_listener_divs_id.minimizable_div = "miniclose1";
+        my_windows["add_information_div"].event_listener_divs_id.sensitive_div = "header_information1";
+        my_windows["add_information_div"].event_listener_divs_id.mini_place_div = "minimized_windows";
+
+        my_windows["direction_div"] = new my_window();
+        //my_windows["direction_div"].movable = true;
+        my_windows["direction_div"].event_listener_divs_id.main_container = "direction_serv";
+        my_windows["direction_div"].event_listener_divs_id.minimizable_div = "miniclose2";
+        my_windows["direction_div"].event_listener_divs_id.sensitive_div = "top_dir_div";
+        my_windows["direction_div"].event_listener_divs_id.mini_place_div = "minimized_windows2";
+
+        google.maps.event.addDomListener(window, "load", function ()
+        {
+            load_styles();
+            //viewing wars
+            for (var kas = 0; kas < 20; kas++) {
+                document.getElementById("progress_bar").innerHTML += "<img src='prog1.png'/>";
+            }
+            //end of viewing wars
+            //window's global 
+            var data_pro = function ()
+            {
+                if (arguments.length != 3) {
+                    this.name = ""; this.value = ""; this.data_type = "none";
+                }
+                else {
+                    this.name = arguments[0];
+                    this.value = arguments[1];
+                    this.data_type = arguments[2];
+                }
+            };
+            var sending_array = new function ()
+            {
+                this.session_id = 0; this.status = 0; this.chunk_size = 0; this.chunk_send = 0,this.chunk_updated=0;
+                /*0 for not initiated,1 for initiated and pending,2 for completed,3 for canceled*/
+                this.map_data = new Array();
+                // name: "", this_user: "", authority: "", contractor: "", estimated_cost: "", incurred_cost: "", start_date: "", end_date: "", categories: "", description: "", date_of_contract: ""
+                this.project_data = { acknowledgment: false, count_of_info: 4, data1: [] };
+                this.reset = function ()
+                {
+                    this.status = 0;
+                    this.chunk_size = 0;
+                    this.chunk_send = 0;
+                    this.map_data = new Array();
+                    this.project_data = {
+                        acknowledgment: false,
+                        count_of_info: 4,
+                        data1: []
+                    };
+                    document.getElementById("progress_bar").innerHTML = "";
+                    for (var ak = 0; ak < 20; ak++) {
+                        document.getElementById("progress_bar").innerHTML+="<img src='prog1.png' />";
+                    }
+                };
+            };
+            function collect_project_data()
+            {
+                sending_array.project_data.data1[0] = new data_pro("name", document.getElementById("inp_prj_name").value, "string");
+                sending_array.project_data.data1[1] = new data_pro("authority", document.getElementById("inp_prj_authority").value, "string");
+                sending_array.project_data.data1[2] = new data_pro("contractor", document.getElementById("inp_prj_contractor").value, "string");
+                sending_array.project_data.data1[3] = new data_pro("cost_estimated", document.getElementById("inp_prj_cost_estimated").value, "money");
+                sending_array.project_data.data1[4] = new data_pro("cost_incurred", document.getElementById("inp_prj_cost_incurred").value, "money");
+                sending_array.project_data.data1[5] = new data_pro("date_of_contract", document.getElementById("date_year_selector").value + "-" + document.getElementById("date_month_selector").value + "-" + document.getElementById("date_day_selector").value, "date");
+                sending_array.project_data.data1[6] = new data_pro("start_date", document.getElementById("date_year_selector2").value + "-" + document.getElementById("date_month_selector2").value + "-" + document.getElementById("date_day_selector2").value, "date");
+                sending_array.project_data.data1[7] = new data_pro("end_date", document.getElementById("date_year_selector3").value + "-" + document.getElementById("date_month_selector3").value + "-" + document.getElementById("date_day_selector3").value, "date");
+                sending_array.project_data.data1[8] = new data_pro("description", document.getElementById("inp_prj_description").value, "string");
+                sending_array.project_data.data1[9] = new data_pro("category", document.getElementById("inp_prj_categories").value, "string");
+                //count of info for array count
+                sending_array.project_data.count_of_info = 10;
+            }
+            function clear_input_for_project_details()
+            {
+                document.getElementById("inp_prj_name").value = "";
+                document.getElementById("inp_prj_authority").value = "";
+                document.getElementById("inp_prj_contractor").value = "";
+                document.getElementById("inp_prj_cost_estimated").value = "";
+                document.getElementById("inp_prj_cost_incurred").value = "";
+                document.getElementById("inp_prj_cost_estimated").value = "";
+                document.getElementById("inp_prj_description").value = "";
+                document.getElementById("inp_prj_categories").value = "";
+                sending_array.reset();
+                DM_data = null;
+                DM_data = [];
+            }
+            function fill_valid_years()
+            {
+                var t = createrequestobject();
+                t.open("GET", "valid_years.php", true);
+                (function ()
+                {
+                    t.onreadystatechange = function ()
+                    {
+
+                        if (t.readyState == 4) {
+                            if (t.status == 200) {
+                                var temp_years = eval('(' + t.responseText + ')');
+
+                                //temp_years = { years: [1990, 1991] };
+                                for (var yr in temp_years.years) {
+
+                                    var onz = document.createElement("option");
+                                    onz.innerHTML = temp_years.years[yr];
+                                    document.getElementById("date_year_selector").appendChild(onz);
+                                    var onz1 = document.createElement("option");
+                                    onz1.innerHTML = temp_years.years[yr];
+                                    document.getElementById("date_year_selector2").appendChild(onz1);
+                                    var onz2 = document.createElement("option");
+                                    onz2.innerHTML = temp_years.years[yr];
+                                    document.getElementById("date_year_selector3").appendChild(onz2);
+                                    get_date('date_day_selector3', 'date_month_selector3', 'date_year_selector3');
+                                    get_date('date_day_selector2', 'date_month_selector2', 'date_year_selector2');
+                                    get_date('date_day_selector', 'date_month_selector', 'date_year_selector');
+                                }
+                            }
+                            else if (t.status == 500) {
+                                alert("error in valid_years.php");
+                            }
+
+
+
+                        }
+                    };
+                })();
+
+                t.send();
+            }
+            fill_valid_years();
+            map = new google.maps.Map(document.getElementById("map_canvas"),
+            {
+                zoom: 13,
+                center: new google.maps.LatLng(23, 73),
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true,
+                disableDoubleClickZoom: true
+            });
+            google.maps.event.addDomListener(document.getElementById("menu").getElementsByTagName("ul")[0].getElementsByTagName("li")[0].getElementsByTagName("label")[0], "click", function ()
+            { /*funcn for adding a project*/
+                switch_mode("add");
+                document.getElementById("prompt_div").style.visibility = "visible";
+                if (DM == null)
+                {
+                    DM = new google.maps.drawing.DrawingManager({
+                        drawingControlOptions: {
+                            drawingModes: [google.maps.drawing.OverlayType.POLYLINE, google.maps.drawing.OverlayType.RECTANGLE, google.maps.drawing.OverlayType.CIRCLE, google.maps.drawing.OverlayType.POLYGON]
+                        },
+                        map: map,
+                        drawingMode: google.maps.drawing.OverlayType.CIRCLE,
+                        circleOptions: { editable: true, fillColor: "#C31C1C", fillOpacity: 0.4, strokeColor: "#B05024", strokeOpacity: 0.3, strokeWeight: 2 },
+                        rectangleOptions: { editable: true, fillColor: "#C80FA0", fillOpacity: 0.4, strokeColor: "#791B40", strokeOpacity: 0.4, strokeWeight: 2 },
+                        polygonOptions: { editable: true, fillColor: "#134669", fillOpacity: 0.4, strokeColor: "#145B38", strokeOpacity: 0.3, strokeWeight: 2 },
+                        polylineOptions: { fillColor: "#293833", fillOpacity: 0.4, strokeColor: "#8B76AA", strokeOpacity: 0.3, strokeWeight: 2 }
+                    });
+                    google.maps.event.addListener(DM, "overlaycomplete", function (ha)
+                    {
+                        var len = DM_data.length; DM_data[len] = { type: ha.type, object_reference: ha.overlay };
+                        /*end of function called on overlay completion*/
+                    });
+                }
+                else
+                {
+                    DM.setMap(map);
+                }  /*funcn for adding a project ends here*/
+            });
+            google.maps.event.addDomListener(document.getElementById("prompt_div").getElementsByTagName("button")[0], "click", function ()
+            {
+                show_hidden_movable_div0(my_windows["add_information_div"]);
+                show_hidden_movable_div0(my_windows["direction_div"])
+            });
+            google.maps.event.addDomListener(document.getElementById("prompt_div").getElementsByTagName("button")[1], "click", function ()
+            {
+                /*variable to store the validity of map and project data before sending*/
+                var ready_to_send = new function () { this.map_data = false; this.project_data = false; this.check = function () { if (this.map_data && this.project_data) return true; else return false; }; };
+                if (DM_data.length == 0) {
+                    alert("please put the project on the map");
+                    ready_to_send.map_data = false;
+                }
+                else
+                    ready_to_send.map_data = true;
+
+                var elig = true;
+                var vv = document.getElementById("content_information1").getElementsByTagName("input");
+                for (var count = 0; count < 3; count++) {
+                    if (vv[count].value == "") { elig = false; break; }
+                }
+                if (elig) {
+                    ready_to_send.project_data = true;
+                }
+                else {
+                    ready_to_send.project_data = false;
+                    alert("please give all the project details");
+                    show_hidden_movable_div0(my_windows["add_information_div"]);
+
+                }
+
+
+
+                if (ready_to_send.check()) {
+
+                    /* ------------------------------------------------------------------*/
+                    /*prepare to launch*/
+
+                    document.getElementById("progress_bar_over_all").style.visibility = "visible";
+
+
+                    /*collect project data*/
+                    collect_project_data();
+                    /*collect map data*/
+                    for (var temp_c1 = 0; temp_c1 < DM_data.length; temp_c1++) {
+                        var temp_len = sending_array.map_data.length;
+                        sending_array.map_data[temp_len] = { shape: "", acknowledgment: false, data: null };
+                        if (DM_data[temp_c1].type == "circle") {
+                            sending_array.map_data[temp_len].shape = "circle";
+                            sending_array.map_data[temp_len].data = { center: new my_lat_lng(), radius: DM_data[temp_c1].object_reference.getRadius() };
+                            sending_array.map_data[temp_len].data.center.lat = DM_data[temp_c1].object_reference.getCenter().lat();
+                            sending_array.map_data[temp_len].data.center.lng = DM_data[temp_c1].object_reference.getCenter().lng();
+                        }
+                        else if (DM_data[temp_c1].type == "rectangle") {
+                            sending_array.map_data[temp_len].shape = "rectangle";
+                            sending_array.map_data[temp_len].data = { south_west: new my_lat_lng(), north_east: new my_lat_lng() };
+                            sending_array.map_data[temp_len].data.north_east.lat = DM_data[temp_c1].object_reference.getBounds().getNorthEast().lat();
+                            sending_array.map_data[temp_len].data.north_east.lng = DM_data[temp_c1].object_reference.getBounds().getNorthEast().lng();
+                            sending_array.map_data[temp_len].data.south_west.lat = DM_data[temp_c1].object_reference.getBounds().getSouthWest().lat();
+                            sending_array.map_data[temp_len].data.south_west.lng = DM_data[temp_c1].object_reference.getBounds().getSouthWest().lng();
+                        }
+                            /*else if (DM_data[temp_c1].type == "polygon") {
+                              //  /*start polygon*/
+                            //  sending_array.map_data[temp_len].shape = "polygon";
+                            //  sending_array.map_data[temp_len].data = { grids1: new Array(), ack_grids1: new Array() };
+                            //  var temp_i = DM_data[temp_len].object_reference.getPath().getArray().length;
+                            //  var temp_aryd = DM_data[temp_len].object_reference.getPath().getArray();
+                            //  for (var kd = 0; kd < temp_i/*change with length of poly array*/; kd++) {
+                            //      sending_array.map_data[temp_len].data.ack_grids1[parseInt(((kd + 1) / 4).toString())] = false;
+                            //      sending_array.map_data[temp_len].data.grids1[parseInt(((kd + 1) / 4).toString())] = { first: new my_lat_lng(temp_aryd[kd].lat(), temp_aryd[kd++].lng()), second: new my_lat_lng(temp_aryd[kd < temp_i ? kd : 0].lat(), temp_aryd[kd < temp_i ? kd++ : 0].lng()), third: new my_lat_lng(temp_aryd[kd < temp_i ? kd : 0].lat(), temp_aryd[kd < temp_i ? kd++ : 0].lng()), fourth: new my_lat_lng(temp_aryd[kd < temp_i ? kd : 0].lat(), temp_aryd[kd < temp_i ? kd : 0].lng()) };
+                            //  }
+                            ////  /*end polygon*/
+                            // }*/
+                        else {
+                            /*for polyline and polygon divide it to pieces and each have a ack*/
+                            sending_array.map_data[temp_len].shape = "polyline";
+                            if (DM_data[temp_c1].type == "polygon") {
+                                DM_data[temp_c1].object_reference.getPath().getArray().push(DM_data[temp_c1].object_reference.getPath().getArray()[0]);
+                            }
+                            sending_array.map_data[temp_len].data = { grids: new Array(), ack_grids: new Array() };
+                            var temp_i = DM_data[temp_len].object_reference.getPath().getArray().length;
+                            var temp_aryd = DM_data[temp_len].object_reference.getPath().getArray();
+                            for (var kd = 0; kd < temp_i; kd++) {
+                                var joj = parseInt(((kd + 1) / 4).toString());
+                                sending_array.map_data[temp_len].data.ack_grids[joj] = false;
+                                sending_array.map_data[temp_len].data.grids[joj] = { first: new my_lat_lng(temp_aryd[kd].lat(), temp_aryd[kd++].lng()), second: new my_lat_lng(temp_aryd[kd < temp_i ? kd : 0].lat(), temp_aryd[kd < temp_i ? kd++ : 0].lng()), third: new my_lat_lng(temp_aryd[kd < temp_i ? kd : 0].lat(), temp_aryd[kd < temp_i ? kd++ : 0].lng()), fourth: new my_lat_lng(temp_aryd[kd < temp_i ? kd : 0].lat(), temp_aryd[kd < temp_i ? kd : 0].lng()) };
+                            }
+                        }
+
+                    }
+                    /*prepare chunk data here*/
+                    (
+                    function ()
+                    {
+                        var n = 1; /*one for project data n++ for each request*/
+                        /*add all rectangles and circles*/
+                        for (var i = 0; i < sending_array.map_data.length; i++) {
+                            if (sending_array.map_data[i].shape == "circle" || sending_array.map_data[i].shape == "rectangle") {
+                                n++;
+                            }
+                            else if (sending_array.map_data[i].shape == "polyline") {
+                                n += sending_array.map_data[i].data.grids.length;
+                            }
+                            else {
+                                /* for polygon*/
+                                //  n += sending_array.map_data[i].data.grids1.length;
+                            }
+                        }
+                        sending_array.chunk_size = n;
+                    }
+                    )();
+                    /*  chunk prepared  */
+
+                    /*prepare data*/
+                    var req = createrequestobject();
+                    req.open("POST", "data_map.php", true);
+                    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    req.onreadystatechange = function ()
+                    {
+                        if (req.readyState == 4) {
+                            if (req.status == 500) {
+                                alert("error in data_map.php u1");
+                            }
+                            if (req.status == 200) {
+                                //alert(req.responseText);
+                                var tee = eval("(" + req.responseText + ")");
+                                sending_array.session_id = tee.session_id;
+                                /*send the data from here :use sending array start new range*/
+                                function close() { }
+                                function handle_data(obj)
+                                {
+                                    update_panel();
+                                    sending_array.chunk_send++;
+                                    // obj = { type: "project_data", session_id: 2, other_info: { index: 0, meta_info:"none"} };
+                                    obj.session_id = 2;
+                                    if (obj.session_id == 2) {
+                                        if (obj.type == "project_type") {
+                                            /*put sending_array's session id*/
+
+                                            sending_array.project_data.acknowledgment = true;
+
+                                        }
+                                        else {
+                                            /*handle map data's return status here*/
+                                            sending_array.map_data[obj.index].acknowledgment = true;
+                                            if (sending_array.map_data[obj.index].type == "polyline") {
+                                                //{ type: "map_type", index: kks, grid_no: ikon }
+                                                sending_array.map_data[obj.index][grid_no]
+                                            }
+
+                                        }
+                                    }
+                                    if (sending_array.chunk_send == sending_array.chunk_size) {
+                                        //send a msg to server to save data.
+                                        var finilize_data = createrequestobject();
+                                        finilize_data.open("POST", "data_map.php", true);
+                                        finilize_data.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                                        (
+                                        function ()
+                                        {
+
+                                            finilize_data.onreadystatechange = function ()
+                                            {
+                                                if (finilize_data.readyState == 4) {
+                                                    if (finilize_data.status == 200) {
+                                                        if (finilize_data.responseText == "1") {
+                                                            alert("saved");
+                                                            document.getElementById("prompt_div").style.visibility = "hidden";
+                                                            /*empty all input fields here*/ /*de reference all varialbles and readystate functions*/
+                                                            for (var s = 0; s < DM_data.length; s++) {
+                                                                DM_data[s].object_reference.setMap(null);
+                                                            }
+                                                            DM_data = [];
+                                                            sending_array.reset();
+                                                            /*removing the window*/
+                                                            finish_move(my_windows["add_information_div"]);
+                                                            DM.setMap(null);
+                                                            clear_input_for_project_details();
+                                                        }
+                                                        else {
+                                                            alert("error occured");
+                                                            alert(finilize_data.responseText);
+                                                        }
+                                                        document.getElementById("progress_bar_prompt_but").onclick = function () { document.getElementById("progress_bar_over_all").style.visibility = "hidden"; };
+                                                    }
+                                                    else if (finilize_data.status == 500) {
+                                                        alert("error in data_map.php 500");
+                                                    }
+
+                                                }
+
+                                            };
+
+                                        }
+                                        )();
+
+                                        finilize_data.send("data_type=final");
+
+                                    }
+                                }
+                                function send_data()
+                                {
+                                    document.getElementById("progress_bar").innerHTML = "";
+
+                                    var vet = createrequestobject();
+                                    vet.open("POST", "data_map.php", true);
+                                    vet.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                                    vet.onreadystatechange = function () { if (vet.readyState == 4) { if (vet.status == 500) { alert("error in data_map.php vet"); } if (vet.status == 200) { handle_data({ type: "project_type" }); } } };
+                                    var sending_data_url = "data_type=project&data_count=" + sending_array.project_data.count_of_info;
+                                    //sending_data_url += "&name=" + sending_array.project_data.data1.name + "&authority=" + sending_array.project_data.data1.authority + "&contractor=" + sending_array.project_data.data1.contractor + "&cost_estimated=" + sending_array.project_data.data1.estimated_cost + "&cost_incurred=" + sending_array.project_data.data1.incurred_cost + "&date_of_contract=" + sending_array.project_data.data1.date_of_contract + "&start_date=" + sending_array.project_data.data1.start_date + "&end_date=" + sending_array.project_data.data1.end_date + "&categories=" + sending_array.project_data.data1.categories + "&description=" + sending_array.project_data.data1.description;
+                                    for (var ppf = 0; ppf < sending_array.project_data.count_of_info; ppf++) {
+                                        sending_data_url += "&" + ppf + "name=" + sending_array.project_data.data1[ppf].name + "&" + ppf + "value=" + sending_array.project_data.data1[ppf].value + "&" + ppf + "data_type=" + sending_array.project_data.data1[ppf].data_type;
+                                    }
+                                    vet.send(sending_data_url);
+                                    var t = [];
+                                    for (var kks = 0; kks < sending_array.map_data.length; kks++) {
+
+                                        if (sending_array.map_data[kks].shape == "circle") {
+
+                                            t[kks] = createrequestobject();
+                                            t[kks].open("POST", "data_map.php", true);
+                                            t[kks].setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                                            (
+                                            function (kks)
+                                            {
+                                                t[kks].onreadystatechange = function ()
+                                                {
+                                                    if (t[kks].readyState == 4) {
+                                                        if (t[kks].status == 200) {
+                                                            //alert(t[kks].responseText+" => circle");
+                                                            handle_data({ type: "map_type", index: kks });
+                                                        }
+                                                        else if (t[kks].status == 500) {
+                                                            alert("error in response of data_map.php for circle");
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                                )(kks);
+                                            var url = "data_type=map&shape_type=circle&s_id=" + sending_array.session_id + "&radius=" + sending_array.map_data[kks].data.radius + "&center_lat=" + sending_array.map_data[kks].data.center.lat + "&center_lng=" + sending_array.map_data[kks].data.center.lng + "&index_no=" + kks;
+                                            t[kks].send(url);
+
+
+                                        }
+                                        else if (sending_array.map_data[kks].shape == "rectangle") {
+                                            t[kks] = createrequestobject();
+                                            t[kks].open("POST", "data_map.php", true);
+                                            t[kks].setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                                            (
+                                            function (kks)
+                                            {
+                                                t[kks].onreadystatechange = function ()
+                                                {
+                                                    if (t[kks].readyState == 4) {
+                                                        if (t[kks].status == 200) {
+                                                            // alert(t[kks].responseText+" => rectangle");
+                                                            handle_data({ type: "map_type", index: kks });
+                                                        }
+                                                        else if (t[kks].status == 500) {
+                                                            alert("error in data_map.php for ractangle");
+                                                        }
+                                                    }
+                                                };
+
+                                            }
+                                            )(kks);
+                                            t[kks].send("data_type=map&shape_type=rectangle&s_id=" + sending_array.session_id + "&south_west_lat=" + sending_array.map_data[kks].data.south_west.lat + "&south_west_lng=" + sending_array.map_data[kks].data.south_west.lng + "&north_east_lng=" + sending_array.map_data[kks].data.north_east.lng + "&north_east_lat=" + sending_array.map_data[kks].data.north_east.lat + "&index_no=" + kks);
+                                        }
+                                        else if (sending_array.map_data[kks].shape == "polyline") {
+                                            t[kks] = new Array();
+                                            for (var ikon = 0; ikon < sending_array.map_data[kks].data.grids.length; ikon++) {
+                                                var url = "data_type=map&shape_type=polyline&s_id" + sending_array.session_id + "&index_no=" + kks;
+                                                url += "&first_lat=" + sending_array.map_data[kks].data.grids[ikon].first.lat + "&first_lng=" + sending_array.map_data[kks].data.grids[ikon].first.lng;
+                                                url += "&second_lat=" + sending_array.map_data[kks].data.grids[ikon].second.lat + "&second_lng=" + sending_array.map_data[kks].data.grids[ikon].second.lng;
+                                                url += "&third_lat=" + sending_array.map_data[kks].data.grids[ikon].third.lat + "&third_lng=" + sending_array.map_data[kks].data.grids[ikon].third.lng;
+                                                url += "&fourth_lat=" + sending_array.map_data[kks].data.grids[ikon].fourth.lat + "&fourth_lng=" + sending_array.map_data[kks].data.grids[ikon].fourth.lng;
+                                                url += "&grid_index_no=" + ikon + "&grid_count=4";
+                                                t[kks][ikon] = createrequestobject();
+                                                t[kks][ikon].open("POST", "data_map.php", true);
+                                                t[kks][ikon].setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                                                (
+                                                function (kks, ikon)
+                                                {
+                                                    t[kks][ikon].onreadystatechange = function ()
+                                                    {
+                                                        if (t[kks][ikon].readyState == 4) {
+                                                            if (t[kks][ikon].status == 200) {
+                                                                //   alert(t[kks][ikon].responseText+" =>  polyline's grid");
+                                                                handle_data({ type: "map_type", index: kks, grid_no: ikon });
+                                                            }
+                                                            else if (t[kks][ikon].status == 500) {
+                                                                alert("error in data_map.php for polyline");
+                                                            }
+                                                        }
+                                                    };
+                                                }
+                                                )(kks, ikon);
+                                                t[kks][ikon].send(url);
+                                            }
+                                        }
+                                        else {
+                                           
+
+
+                                        }
+
+                                    }
+
+                                }
+                                function update_panel()
+                                {
+                                    //clear on submit button
+
+                                    //document.getElementById("progress_bar").innerHTML += "<img src='tt.jpg'/>";
+                                    sending_array.chunk_send
+                                    var x = sending_array.chunk_updated;
+                                    var y = sending_array.chunk_size;
+                                    var z = parseInt(((y-x) / 5).toString());
+                                    for (var as = 0; as < z; as++) {
+                                        document.getElementById("progress_bar").getElementsByTagName("img")[as].src="prog2.png";
+                                    }
+                                    sending_array.chunk_updated = z + sending_array.chunk_updated;
+
+
+
+                                }
+
+                                send_data(); /*end of new range*/
+                            }
+                        }
+                    };
+                    req.send("data_type=none");
+                    /*kick data*/
+                }
+
+            });
+            google.maps.event.addDomListener(document.getElementById("prompt_div").getElementsByTagName("button")[2], "click", function ()
+            {
+                document.getElementById("direction_serv").style.visibility = "hidden";
+                document.getElementById("prompt_div").style.visibility = "hidden";
+                /*empty all input fields here*/ /*de reference all varialbles and readystate functions*/
+                for (var s = 0; s < DM_data.length; s++)
+                {
+                    DM_data[s].object_reference.setMap(null);
+                }
+                DM_data = [];
+                /*removing the window*/
+                finish_move(my_windows["add_information_div"]);
+                finish_move(my_windows["direction_div"]);
+                DM.setMap(null);
+                clear_input_for_project_details();
+                sending_array.reset();
+            });
+            google.maps.event.addDomListener(document.getElementById("inp_prj_name"), "keyup", function (e)
+            {
+                if (e.keyCode > 47 && e.keyCode < 90) {
+                    var x = createrequestobject();
+                    x.open("GET", "get_input.php" + "w=" + document.getElementById("inp_prj_name").value + "&type=name", true);
+                    x.onreadystatechange = function ()
+                    {
+                        if (x.readyState == 4)
+                        {
+                            if (x.status == 200)
+                            {
+                                var d = eval("(" + x.responseText + ")");
+                                //var d = eval("({found:false})"); //sample data
+                                if (d.found)
+                                {
+                                  //if name doesn't exist in the database show ok
+                                }
+                                else
+                                {
+                                  //if name exist in the database show not ok
+                                }
+                            
+                            }
+                        }
+                    };
+                    x.send();
+                }
+            });
+            google.maps.event.addDomListener(document.getElementById("inp_prj_authority"), "keyup", function (e)
+            {
+                if (e.keyCode > 47 && e.keyCode < 90)
+                {
+                    var x = createrequestobject();
+                    x.open("GET", "get_input.php?w=" + document.getElementById("inp_prj_authority").value + "&type=authority", true);
+                    x.onreadystatechange = function ()
+                    {
+                        if (x.readyState == 4)
+                        {
+                            if (x.status == 200)
+                            {
+                                //var dj = eval("({data_array:['pwd pune','pwd loni','pwd shirur','pwd nasik','pwd aurangabad'],count:5})");//sample data
+                                dj = eval("("+x.responseText+")");
+                                if (dj.count > 0)
+                                {
+                                    //show help like google's list
+                                    
+                                }
+                            }
+                        }
+                    }; x.send();
+                }
+            });
+            google.maps.event.addDomListener(document.getElementById("inp_prj_contractor"), "keyup", function (e)
+            {
+                if (e.keyCode > 47 && e.keyCode < 90)
+                {
+                    var x = createrequestobject();
+                    x.open("GET", "get_input.php?w=" + document.getElementById("inp_prj_contractor").value + "&type=contractor", true);
+                    x.onreadystatechange = function ()
+                    {
+                        if (x.readyState == 4)
+                        {
+                            if (x.status == 200)
+                            {
+                                //var dj = eval("({data_array:['pwd pune','pwd loni','pwd shirur','pwd nasik','pwd aurangabad'],count:5})");//sample data
+                                var dj = eval("("+x.responseText+")");
+                                if (dj.count > 0)
+                                {
+                                     //show help like google's list
+                                }
+                            }
+                        }
+                    }; x.send();
+                }
+            });
+            google.maps.event.addDomListener(document.getElementById("date_year_selector"), "change", function (e) { get_date('date_day_selector', 'date_month_selector', 'date_year_selector'); });
+            google.maps.event.addDomListener(document.getElementById("date_month_selector"), "change", function (e) { get_date('date_day_selector', 'date_month_selector', 'date_year_selector'); });
+            google.maps.event.addDomListener(document.getElementById("date_year_selector2"), "change", function (e) { get_date('date_day_selector2', 'date_month_selector2', 'date_year_selector2'); });
+            google.maps.event.addDomListener(document.getElementById("date_month_selector2"), "change", function (e) { get_date('date_day_selector2', 'date_month_selector2', 'date_year_selector2'); });
+            google.maps.event.addDomListener(document.getElementById("date_year_selector3"), "change", function (e) { get_date('date_day_selector3', 'date_month_selector3', 'date_year_selector3'); });
+            google.maps.event.addDomListener(document.getElementById("date_month_selector3"), "change", function (e) { get_date('date_day_selector3', 'date_month_selector3', 'date_year_selector3'); });
+            function get_date(day_div_id, month_div_id, year_div_id)
+            {
+                var t = createrequestobject();
+                t.open("GET", "get_date.php?month=" + document.getElementById(month_div_id).value.toString() + "&year=" + document.getElementById(year_div_id).value, true);
+                (
+                              function (day_div_id)
+                              {
+                                  t.onreadystatechange = function ()
+                                  {
+                                      if (t.readyState == 4) {
+                                          if (t.status == 200) {
+
+                                              document.getElementById(day_div_id).innerHTML = "";
+                                              var temp_days = eval("(" + t.responseText + ")");
+                                              //temp_days = { days: [1, 2, 3] };
+                                              for (var oohs in temp_days.days) {
+                                                  var daz = document.createElement("option");
+                                                  daz.innerHTML = temp_days.days[oohs];
+                                                  document.getElementById(day_div_id).appendChild(daz);
+                                              }
+
+                                          }
+                                      }
+                                  };
+                              }
+                              )(day_div_id);
+
+                t.send();
+
+            }
+            function make_move0(mm)
+            {
+                // mm = new my_window(); //rem
+                if (!mm.event_listeners_created.for_movement) {
+                    var object_var = document.getElementById(mm.event_listener_divs_id.main_container);
+                    var exp1 = new RegExp("absolute", "i");
+                    var exp2 = new RegExp("fixed", "i");
+                    if (exp1.exec(object_var.style.position) || exp2.exec(object_var.style.position)) {
+                        mm.event_listeners.onmove = google.maps.event.addDomListener(document.body, "mousemove", function (e) { if (mm.mouse_down_on_element) { if (e.pageX) { document.getElementById(mm.event_listener_divs_id.main_container).style.left = (e.pageX - mm.x_axis).toString() + "px"; document.getElementById(mm.event_listener_divs_id.main_container).style.top = (e.pageY - mm.y_axis).toString() + "px"; } else { document.getElementById(mm.event_listener_divs_id.main_container).style.left = (e.offsetX - x_axis).toString() + "px"; document.getElementById(mm.event_listener_divs_id.main_container).style.top = (e.offsetY - mm.y_axis).toString() + "px"; } } });
+                        mm.event_listeners.onup = google.maps.event.addDomListener(document.body, "mouseup", function () { mm.mouse_down_on_element = false; });
+                        mm.event_listeners.ondown = google.maps.event.addDomListener(document.getElementById(mm.event_listener_divs_id.sensitive_div), "mousedown", function (e) { mm.mouse_down_on_element = true; if (e.pageX) { mm.x_axis = e.pageX; mm.y_axis = e.pageY; } else { mm.x_axis = e.offsetX; mm.y_axis = e.offsetY; } mm.x_axis = mm.x_axis - new RegExp("[-]?[0-9]*").exec(document.getElementById(mm.event_listener_divs_id.main_container).style.left.toString())[0]; mm.y_axis = mm.y_axis - new RegExp("[-]?[0-9]*").exec(document.getElementById(mm.event_listener_divs_id.main_container).style.top.toString())[0]; });
+                        mm.event_listeners_created.for_movement = true;
+                    }
+                }
+            }
+            function show_hidden_movable_div0(mm)
+            {
+                // mm = new my_window(); //rem
+                document.getElementById(mm.event_listener_divs_id.main_container).style.visibility = "visible";
+                make_move0(mm);
+                if (mm.movable) {
+                    activate_menu_zip0(mm);
+                }
+            }
+            function activate_menu_zip0(mm)
+            {
+                //mm = new my_window();
+                if (!mm.event_listeners_created.for_zip) {
+                    var temp_1 = document.getElementById(mm.event_listener_divs_id.minimizable_div).getElementsByTagName("img")[0];
+                    var temp_2 = document.getElementById(mm.event_listener_divs_id.minimizable_div).getElementsByTagName("img")[1];
+                    mm.mini_window_listeners.first_listener = google.maps.event.addDomListener(temp_1, "click", function () { document.getElementById(mm.event_listener_divs_id.main_container).style.visibility = "hidden"; document.getElementById(mm.event_listener_divs_id.mini_place_div).innerHTML = "<label>Added<label>"; document.getElementById(mm.event_listener_divs_id.mini_place_div).getElementsByTagName("label")[0].onclick = function () { show_hidden_movable_div0(mm); /*show_hidden_movable_div("add_information_div", "header_information1", "miniclose1");*/ } });
+                    mm.mini_window_listeners.second_listener = google.maps.event.addDomListener(temp_2, "click", function () { document.getElementById(mm.event_listener_divs_id.main_container).style.visibility = "hidden"; });
+                    mm.event_listeners_created.for_zip = true;
+                }
+                else {
+                    document.getElementById(mm.event_listener_divs_id.mini_place_div).innerHTML = "";
+                }
+            }
+            function finish_move(mml)
+            {
+                /*remove event_listners here*/
+                google.maps.event.removeListener(mml.mini_window_listeners.first_listener);
+                google.maps.event.removeListener(mml.mini_window_listeners.second_listener);
+                mml.event_listeners_created.for_zip = false;
+                mml.event_listeners.onup = 00;
+                mml.event_listeners.ondown = 00;
+                mml.event_listeners.onmove = 00;
+                mml.event_listeners_created.for_movement = false;
+                mml.event_listeners_created.for_zip = false;
+                document.getElementById(mml.event_listener_divs_id.main_container).style.visibility = "hidden";
+                document.getElementById(mml.event_listener_divs_id.mini_place_div).innerHTML = "";
+                mml.x_axis = 0;
+                mml.y_axis = 0;
+            }
+            function switch_mode(mode)
+            {
+                my_global_array.mode = mode;
+                switch (mode) {
+                    case "view":
+
+                        document.getElementById("prompt_div").style.visibility = "hidden";
+                        /*empty all input fields here*/ /*de reference all varialbles and readystate functions*/
+                        for (var s = 0; s < DM_data.length; s++) { DM_data[s].object_reference.setMap(null); }
+                        DM_data = [];
+                        /*removing the window*/
+                        finish_move(my_windows["add_information_div"]);
+                        if (DM != null)
+                            DM.setMap(null);
+                        clear_input_for_project_details();
+                        sending_array.reset();
+                        fill_projects();
+                        break;
+                    case "add":
+                        remove_all_project();
+
+                        break;
+                    case "export":
+                        break;
+                }
+
+            }
+            google.maps.event.addDomListener(document.getElementById("menu").getElementsByTagName("ul")[0].getElementsByTagName("li")[1].getElementsByTagName("label")[0], "click", function ()
+            {
+                switch_mode("view");
+                //if event is not already associated with map
+                if (!my_global_array.view_data.event_created_for_drag_end) {
+                    my_global_array.view_data.event_map_drag_end_id = google.maps.event.addListener(map, "dragend", function ()
+                    {
+                        set_view_mode();
+                    });
+                }
+            });
+            google.maps.event.addDomListener(document.getElementById("ok_save_dire"), "click", function ()
+            {
+                if (my_global_array.add_data.direction_service.temp_poly != null) {
+
+                    DM_data[DM_data.length] = { type: "polyline", object_reference: my_global_array.add_data.direction_service.temp_poly };
+                    reset_direction_service("hide");
+                    my_global_array.add_data.direction_service.temp_poly = null;
+                }
+                else {
+                    alert("first set a route");
+                }
+            });
+            google.maps.event.addDomListener(document.getElementById("cancel_dire"), "click", function ()
+            {
+                my_global_array.add_data.direction_service.reset();
+
+            });
+            function set_view_mode()
+            {
+                my_global_array.view_data.current_map_bound.ne.lat = map.getBounds().getNorthEast().lat();
+                my_global_array.view_data.current_map_bound.ne.lng = map.getBounds().getNorthEast().lng();
+                my_global_array.view_data.current_map_bound.sw.lat = map.getBounds().getSouthWest().lat();
+                my_global_array.view_data.current_map_bound.sw.lng = map.getBounds().getSouthWest().lng();
+
+                my_global_array.view_data.event_created_for_drag_end = true;
+
+                var request_object = createrequestobject();
+                var request_url = "get_all_projects_id.php?sw_lat=" + my_global_array.view_data.current_map_bound.sw.lat + "&sw_lng=" + my_global_array.view_data.current_map_bound.sw.lng + "&ne_lat=" + my_global_array.view_data.current_map_bound.ne.lat + "&ne_lng=" + my_global_array.view_data.current_map_bound.ne.lng;
+                request_object.open("GET", request_url, true);
+
+                request_object.onreadystatechange = function ()
+                {
+                    if (request_object.readyState == 4) {
+                        if (request_object.status == 200) {
+                            var temp_doc = request_object.responseXML;
+                            var t = new my_bound();
+                            t.sw.lat = temp_doc.getElementsByTagName("bound_data")[0].getElementsByTagName("south_west")[0].getElementsByTagName("lat")[0].text;
+                            t.sw.lng = temp_doc.getElementsByTagName("bound_data")[0].getElementsByTagName("south_west")[0].getElementsByTagName("lng")[0].text;
+                            t.ne.lat = temp_doc.getElementsByTagName("bound_data")[0].getElementsByTagName("north_east")[0].getElementsByTagName("lat")[0].text;
+                            t.ne.lng = temp_doc.getElementsByTagName("bound_data")[0].getElementsByTagName("north_east")[0].getElementsByTagName("lng")[0].text;
+                            //above code is not working in firefox may be coz of getElemets
+                            if (t.equals(my_global_array.view_data.current_map_bound)) {
+                                var prj_temp = temp_doc.getElementsByTagName("project_ids")[0].getElementsByTagName("project_id");
+                                var er = temp_doc.getElementsByTagName("error");
+                                if (er.length == 0) {
+                                    for (var counter = 0; counter < prj_temp.length; counter++) {
+
+                                        var temp_id = prj_temp[counter].text;
+                                        if (my_global_array.view_data.projects[temp_id] == null) {
+                                            my_global_array.view_data.projects[temp_id] = new fdb_project();
+                                            my_global_array.view_data.projects[temp_id].meta_information.project_id = temp_id;
+                                            my_global_array.view_data.projects[temp_id].request_data_from_database();
+                                        }
+
+                                    }
+
+                                }
+
+
+
+                            }
+
+                        }
+                    }
+                };
+                request_object.send();
+
+            }
+            function remove_all_project()
+            {
+                for (var ak in my_global_array.view_data.projects) {
+                    my_global_array.view_data.projects[ak].unprint();
+                }
+
+            }
+            function fill_projects()
+            {
+                for (var ak in my_global_array.view_data.projects) {
+                    my_global_array.view_data.projects[ak].print();
+                }
+            }
+            function reset_direction_service()
+            {
+                my_global_array.add_data.direction_service.reset();
+                if (arguments[0] == "hide")
+                    document.getElementById("direction_serv").style.visibility = "hidden";
+
+            }
+            google.maps.event.addDomListener(document.getElementById("set_direA"), "click", function ()
+            {
+                if (my_global_array.add_data.direction_service.event_attached.for_destination) {
+                    google.maps.event.removeListener(my_global_array.add_data.direction_service.event_code.for_destination);
+                    my_global_array.add_data.direction_service.event_attached.for_destination = false;
+                }
+                if (!my_global_array.add_data.direction_service.event_attached.for_source) {
+                    my_global_array.add_data.direction_service.event_code.for_source = google.maps.event.addListener(map, "click", function (e)
+                    {
+
+                        my_global_array.add_data.direction_service.source.lat = e.latLng.lat();
+                        my_global_array.add_data.direction_service.source.lng = e.latLng.lng();
+                        document.getElementById("f_sig").className = "signal_status_ok";
+                        document.getElementById("f_sig").innerHTML = "<label>Set</label>";
+                        if (my_global_array.add_data.direction_service.source_marker == null) {
+                            my_global_array.add_data.direction_service.source_marker = new google.maps.Marker({ map: map });
+                        }
+                        my_global_array.add_data.direction_service.source_marker.setPosition(new google.maps.LatLng(my_global_array.add_data.direction_service.source.lat, my_global_array.add_data.direction_service.source.lng));
+                    });
+                    my_global_array.add_data.direction_service.event_attached.for_source = true;
+                }
+            });
+
+            google.maps.event.addDomListener(document.getElementById("set_direB"), "click", function ()
+            {
+                if (my_global_array.add_data.direction_service.event_attached.for_source) {
+                    google.maps.event.removeListener(my_global_array.add_data.direction_service.event_code.for_source);
+                    my_global_array.add_data.direction_service.event_attached.for_source = false;
+                }
+                if (!my_global_array.add_data.direction_service.event_attached.for_destination) {
+                    my_global_array.add_data.direction_service.event_code.destination = google.maps.event.addListener(map, "click", function (e)
+                    {
+
+                        my_global_array.add_data.direction_service.destination.lat = e.latLng.lat();
+                        my_global_array.add_data.direction_service.destination.lng = e.latLng.lng();
+                        document.getElementById("s_sig").className = "signal_status_ok";
+                        document.getElementById("s_sig").innerHTML = "<label>Set</label>";
+                        if (my_global_array.add_data.direction_service.destination_marker == null) {
+                            my_global_array.add_data.direction_service.destination_marker = new google.maps.Marker({ map: map });
+                        }
+                        my_global_array.add_data.direction_service.destination_marker.setPosition(new google.maps.LatLng(my_global_array.add_data.direction_service.destination.lat, my_global_array.add_data.direction_service.destination.lng));
+                    });
+                    my_global_array.add_data.direction_service.event_attached.for_destination = true;
+                }
+            });
+            google.maps.event.addDomListener(document.getElementById("set_direction"), "click", function ()
+            {
+                if (my_global_array.add_data.direction_service.source_marker != null && my_global_array.add_data.direction_service.destination_marker != null) {
+                    var dir = new google.maps.DirectionsService();
+                    if (my_global_array.add_data.direction_service.direction_renderer == null) {
+                        my_global_array.add_data.direction_service.direction_renderer = new google.maps.DirectionsRenderer();
+                    }
+                    //my_global_array.add_data.direction_service.direction_renderer.setMap(map);
+
+                    var option = {
+                        origin: new google.maps.LatLng(my_global_array.add_data.direction_service.source.lat, my_global_array.add_data.direction_service.source.lng),
+                        destination: new google.maps.LatLng(my_global_array.add_data.direction_service.destination.lat, my_global_array.add_data.direction_service.destination.lng),
+                        travelMode: google.maps.DirectionsTravelMode.DRIVING
+                    };
+                    dir.route(option, function (response, status)
+                    {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            my_global_array.add_data.direction_service.direction_renderer.setDirections(response);
+                            my_global_array.add_data.direction_service.temp_poly = new google.maps.Polyline();
+                            var m_ary = response.routes[0].legs[0].steps;
+                            for (var cow = 0; cow < m_ary.length; cow++) {
+                                var n_ary = m_ary[cow].path;
+                                for (var kow = 0; kow < n_ary.length; kow++) {
+                                    var te = new google.maps.LatLng(n_ary[kow].lat(), n_ary[kow].lng());
+                                    my_global_array.add_data.direction_service.temp_poly.getPath().push(te);
+                                }
+                            }
+                            my_global_array.add_data.direction_service.temp_poly.setMap(map);
+                            //                            my_temp_poly.setMap(map);
+                            //DM_data[DM_data.length] = {type:"polyline",object_reference:my_temp_poly};
+                            //map.setCenter();
+                        }
+                    }
+
+                    );
+                }
+                else
+                    alert("first set source and destination");
+
+            });
+        });
+        //end of window load
+    </script>
+</head>
+<body>
+    <div id="map_cover">
+        <div id="map_canvas">
+        </div>
+    </div>
+    <div id="menu">
+        <ul>
+            <li>
+                <label>Add project data</label></li>
+            <li>
+                <label>View Project data</label></li>
+            <li>
+                <label>Export data</label></li>
+        </ul>
+    </div>
+    <div id="prompt_div">
+        <button>
+            Add Information</button>
+        <button>
+            Submit</button>
+        <button>
+            Cancel</button>
+    </div>
+    <div id="add_information_div" class="move_container">
+        <div id="menu_strip1" class="menu_strip">
+            <div id="header_information1" class="header_container">
+                <label>
+                    Add information about project</label>
+            </div>
+            <div class="menu_strip_zip" id="miniclose1">
+                <img src="minimize.jpg" alt="minimize image" /><img src="close.jpg" alt="close image" />
+            </div>
+        </div>
+        <div id="content_information1" class="content_container">
+            <table cellpadding="1" cellspacing="0">
+                <tr>
+                    <td>
+                        <label>
+                            Project name</label>
+                    </td>
+                    <td>
+                        <div class="auto_comp_div">
+                            <input type="text" name="prj_name" id="inp_prj_name" />
+                        </div>
+                    </td>
+                    <td>
+                        <label class="red">
+                            *</label>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Project Authority</label>
+                    </td>
+                    <td>
+                        <div class="auto_comp_div">
+                            <input type="text" name="prj_authority" id="inp_prj_authority" />
+                        </div>
+                    </td>
+                    <td>
+                        <label class="red">
+                            *</label>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Contractor</label>
+                    </td>
+                    <td>
+                        <div class="auto_comp_div">
+                            <input type="text" name="prj_contractor" id="inp_prj_contractor" />
+                        </div>
+                    </td>
+                    <td>
+                        <label class="red">
+                            *</label>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            cost estimated</label>
+                    </td>
+                    <td>
+                        <input type="text" name="prj_cost_estimated" id="inp_prj_cost_estimated" />
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            cost incurred</label>
+                    </td>
+                    <td>
+                        <input type="text" name="inp_prj_cost_incurred" id="inp_prj_cost_incurred" />
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            date of contract</label>
+                    </td>
+                    <td>
+                        <select id="date_year_selector">
+                        </select>
+                        <select id="date_month_selector">
+                            <option>january</option>
+                            <option>feburary</option>
+                            <option>march</option>
+                            <option>april</option>
+                            <option>may</option>
+                            <option>june</option>
+                            <option>july</option>
+                            <option>august</option>
+                            <option>september</option>
+                            <option>october</option>
+                            <option>november</option>
+                            <option>december</option>
+                        </select>
+                        <select id="date_day_selector">
+                        </select>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Project Start date</label>
+                    </td>
+                    <td>
+                        <select id="date_year_selector2">
+                        </select>
+                        <select id="date_month_selector2">
+                            <option>january</option>
+                            <option>feburary</option>
+                            <option>march</option>
+                            <option>april</option>
+                            <option>may</option>
+                            <option>june</option>
+                            <option>july</option>
+                            <option>august</option>
+                            <option>september</option>
+                            <option>october</option>
+                            <option>november</option>
+                            <option>december</option>
+                        </select>
+                        <select id="date_day_selector2">
+                        </select>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Project end date</label>
+                    </td>
+                    <td>
+                        <select id="date_year_selector3">
+                        </select>
+                        <select id="date_month_selector3">
+                            <option>january</option>
+                            <option>feburary</option>
+                            <option>march</option>
+                            <option>april</option>
+                            <option>may</option>
+                            <option>june</option>
+                            <option>july</option>
+                            <option>august</option>
+                            <option>september</option>
+                            <option>october</option>
+                            <option>november</option>
+                            <option>december</option>
+                        </select>
+                        <select id="date_day_selector3">
+                        </select>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Project categories
+                    </td>
+                    <td>
+                        <input type="text" id="inp_prj_categories" name="prj_categories" />
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Description</label>
+                    </td>
+                    <td>
+                        <textarea id="inp_prj_description"></textarea>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="projects_option">
+        <label>
+            Categories</label>
+    </div>
+    <div id="direction_serv">
+        <div id="top_dir_div">
+            <div id="header_information2" class="header_container">
+                <h3>use direction service</h3>
+
+            </div>
+            <div class="menu_strip_zip" id="miniclose2">
+                <img src="minimize.jpg" alt="minimize image" /><img src="close.jpg" alt="close image" />
+            </div>
+
+
+        </div>
+        <div id="content_dir_div" class="content_container">
+            <table>
+                <tr>
+                    <td>
+                        <button id="set_direA">Set Starting point</button>
+                    </td>
+                    <td>
+                        <button id="set_direB">Set Destination Point</button>
+                    </td>
+                    <td>
+                        <button id="set_direction">Set Direction</button>
+                    </td>
+                    <td>
+                        <button id="ok_save_dire">Save</button>
+                    </td>
+                    <td>
+                        <button id="cancel_dire">Cancel</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="signal_status_no" id="f_sig">
+                            <label>not net</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="signal_status_no" id="s_sig">
+                            <label>not set</label>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+    </div>
+    <div id="minimized_windows">
+    </div>
+    <div id="minimized_windows2">
+    </div>
+    <div id="map_controls">
+        <label>
+            testing</label>
+    </div>
+    <div id="progress_bar_over_all">
+        <div id="progress_bar_over">
+            <div id="progress_bar_top">
+                <p>
+                    <label>
+                        title</label>
+                </p>
+            </div>
+            <div id="progress_bar_main">
+                <div id="progress_bar">
+                <img src="prog1.png" />
+                
+                </div>
+            </div>
+            <div id="progress_bar_prompt">
+                <button id="progress_bar_prompt_but">OK</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
